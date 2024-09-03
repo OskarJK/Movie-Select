@@ -1,5 +1,6 @@
 import mysql.connector
 import random
+import time
 
 # Zrobić wybór filmu na podstawie roku produkcji, rodzaju filmu (animacja/live-action).
 
@@ -12,19 +13,36 @@ def main():
 
     while True:
         choice = input(
-            "Hello there! What do you want to do? \n 1. Add a movie to database \n 2. Remove movie from database \n 3. End program \n Your choice: "
+            "Hello there! What do you want to do? \n 1. Add a movie to database \n 2. Remove movie from database \n 3. Choose random movie from database \n 4. End program \n Your choice: "
         )
         if choice == "1":
             add_movie(mycursor, connection)
         elif choice == "2":
             remove_movie(mycursor, connection)
         elif choice == "3":
+            choose_random(mycursor)
+        elif choice == "4":
             print("Goodbye!")
             break
         else:
-            print("Please enter your choice")
+            print("Please enter your choice(1-4)")
     connection.close()
 
+
+def choose_random(mycursor):
+    query = "SELECT * FROM movies"
+    mycursor.execute(query)
+    movie_list = []
+    for row in mycursor:
+        movie_list.append(row)
+    result = random.choice(movie_list)
+    print("Are you ready?")
+    for i in range(3, 0, -1):
+        print(i)
+        time.sleep(1)
+    print("--------------------------------------")
+    print(result)
+    print("--------------------------------------")
 
 def add_movie(mycursor, connection):
     name = input("What is the name of the movie: ")
@@ -66,6 +84,8 @@ def remove_movie(mycursor, connection):
     mycursor.execute(query_remove, value)
     connection.commit()
     print(mycursor.rowcount, "record(s) deleted successfully")
+
+    
 
 
 if __name__ == "__main__":
